@@ -1,0 +1,6 @@
+---
+schemaVersion: '2.0.0'
+metadataTest:
+  exposedPorts: ["8080"]
+  cmd: ["myq5_svc"]
+  workdir: "/MyQuarantine5Service"

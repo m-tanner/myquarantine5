@@ -1,0 +1,12 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: myq5-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: myq5-ip
+    networking.gke.io/managed-certificates: myq5-cert
+spec:
+  backend:
+    serviceName: myq5-service
+    servicePort: 8080

@@ -1,0 +1,8 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: myq5-config-map
+data:
+  CLOUD_PROVIDER: "gcloud"
+  FLASK_CONFIG: "production"

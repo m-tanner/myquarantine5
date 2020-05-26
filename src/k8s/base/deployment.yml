@@ -1,0 +1,83 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: myq5-deployment
+spec:
+  replicas: 0
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      app: myq5-web-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    spec:
+      imagePullSecrets:
+        - name: myq5-secret
+      containers:
+        - name: myq5-web-app
+          image: "gcr.io/four-track-friday-2/myq5_web_app"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYQ5_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: myq5-secret
+                  key: MYQ5_SECRET_KEY
+            - name: MYQ5_EMAIL_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: myq5-secret
+                  key: MYQ5_EMAIL_ADDRESS
+            - name: MYQ5_EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: myq5-secret
+                  key: MYQ5_EMAIL_PASSWORD
+            - name: MYQ5_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: myq5-secret
+                  key: MYQ5_DATABASE_URL
+            - name: MYQ5_ADMIN_EMAIL_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: myq5-secret
+                  key: MYQ5_ADMIN_EMAIL_ADDRESS
+            - name: CLOUD_PROVIDER
+              valueFrom:
+                configMapKeyRef:
+                  name: myq5-config-map
+                  key: CLOUD_PROVIDER
+            - name: FLASK_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: myq5-config-map
+                  key: FLASK_CONFIG
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /health
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /health
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 250m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
