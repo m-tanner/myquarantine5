@@ -28,8 +28,6 @@ install_requirements = [
     "flask-pagedown",
     "Markdown",
     "bleach",
-    "flask-talisman",
-    "flask-seasurf",
 ]
 
 test_requirements = [

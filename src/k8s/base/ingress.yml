@@ -7,6 +7,15 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: myq5-ip
     networking.gke.io/managed-certificates: myq5-cert
 spec:
-  backend:
-    serviceName: myq5-service
-    servicePort: 8080
+  tls:
+    - hosts:
+        - myquarantine5.com
+      secretName: myq5-cert
+  rules:
+    - host: myquarantine5.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: myq5-service
+              servicePort: 8080
